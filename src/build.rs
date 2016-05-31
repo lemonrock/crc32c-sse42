@@ -55,7 +55,7 @@ fn has_yasm() -> bool
 {
 	match Command::new("yasm").args(&["-h"]).stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null()).status()
 	{
-		Ok(_) => true
-		Err(_) => false
+		Ok(_) => true,
+		Err(_) => false,
 	}
 }
