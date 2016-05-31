@@ -1,0 +1,6 @@
+[submodule ".cargo"]
+	path = .cargo
+	url = https://github.com/lemonrock/.cargo.git
+[submodule "src/c"]
+	path = src/c
+	url = https://github.com/lemonrock/c.git

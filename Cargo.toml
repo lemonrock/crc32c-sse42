@@ -1,0 +1,40 @@
+# This file is part of crc32c-sse42. It is subject to the license terms in the COPYRIGHT file found in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/crc32c-sse42/master/COPYRIGHT. No part of crc32c-sse42, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the COPYRIGHT file.
+# Copyright © 2016 The developers of crc32c-sse42. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/crc32c-sse42/master/COPYRIGHT.
+
+[package]
+name = "crc32c-sse42"
+description = "crc32c-sse42"
+keywords = ["crc32c-sse42"]
+license = "MIT"
+authors = ["Raphael Cohn <raphael.cohn@stormmq.com>"]
+documentation = "https://github.com/lemonrock/crc32c-sse42/blob/master/README.md"
+homepage = "https://github.com/lemonrock/crc32c-sse42"
+repository = "https://github.com/lemonrock/crc32c-sse42.git"
+exclude = ["*"]
+include = ["README.md", "LICENSE", "COPYRIGHT", "src/**/*.rs", "benches/**/*.rs", "examples/**/*.rs", "tests/**/*.rs", "Cargo.toml", "rustfmt.toml", "clippy.toml"]
+# Relative to Cargo.toml
+readme = "README.md"
+build = "src/build.rs"
+publish = false
+version = "0.0.0"
+
+[replace]
+"libc:0.2.11" = { git = "https://github.com/lemonrock/libc" }
+
+[dependencies]
+libc = "0.2.11"
+
+[build-dependencies]
+gcc = "0.3"
+
+[features]
+default = ["sse42"]
+sse42 = []
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
