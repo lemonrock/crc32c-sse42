@@ -8,6 +8,12 @@
 For interest, a 32-bit and 64-bit implementation that uses SSE 4.2 but not CLMUL is included but not built (`src/build.sse42_rjc.c`).
 
 
+## Compiling and Installing
+
+* The feature flag `sse42` is set by default; disable it if installing on x86 platforms that lack SSE4.2.
+* The program `yasm` must be present at build time if the feature flag `sse42` is set.
+
+
 ## Future Optimisations
 
 * It is possible to introduce a fallback optimisation for 64-bit and 32-bit X86 CPUs which lack SSE 4.2 but have the CLMUL instruction set by using Intel's Slicing-by-8 code on SourceForge.

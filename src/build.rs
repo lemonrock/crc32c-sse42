@@ -3,6 +3,7 @@
 
 
 use std::process::Command;
+use std::process::Stdio;
 use std::env;
 extern crate gcc;
 use gcc::Config;
@@ -18,18 +19,18 @@ fn main()
 	if cfg!(feature = "sse42")
 	{
 		// We check target_pointer_width for when (if ever) Rust adds x32 (ILP32) support on Linux
-		if cfg!(target_arch = "x86_64") && cfg!(target_pointer_width = "64") && (cfg!(windows) || cfg!(any(target_os = "linux", target_os = "android")))
+		if cfg!(target_arch = "x86_64") && cfg!(target_pointer_width = "64") && (cfg!(windows) || cfg!(any(target_os = "linux", target_os = "android")) && has_yasm())
 		{
 			let source_file = "src/crc_iscsi_v_pcl.asm";
 			let object_file = format!("{}/crc_iscsi_v_pcl.o", out_dir);
 			let arguments;
 			if cfg!(windows)
 			{
-				arguments = vec!["-Xvc", "-f", "x64", "-rnasm", "-pnasm", "-o", &object_file, &source_file];
+				arguments = vec!["-X", "vc", "-f", "x64", "-rnasm", "-pnasm", "-o", &object_file, &source_file];
 			}
 			else if cfg!(any(target_os = "linux", target_os = "android"))
 			{
-				arguments = vec!["-f", "x64", "-f", "elf64", "-X", "gnu", "-g", "dwarf2", "-D", "LINUX", "-o", &object_file, &source_file];
+				arguments = vec!["-X", "gnu", "-f", "x64", "-f", "elf64", "-g", "dwarf2", "-D", "LINUX", "-o", &object_file, &source_file];
 			}
 			else
 			{
@@ -39,7 +40,7 @@ fn main()
 		
 			config.flag(&object_file);
 		}
-		else if (cfg!(target_arch = "x86_64") || cfg!(target_arch = "x86"))
+		else if cfg!(target_arch = "x86_64") || cfg!(target_arch = "x86")
 		{
 			config.flag("-mpclmul");
 			config.flag("-msse4.2");
@@ -48,4 +49,13 @@ fn main()
 
 	config.file("src/build.c");
 	config.compile("libbuild.a");
+}
+
+fn has_yasm() -> bool
+{
+	match Command::new("yasm").args(&["-h"]).stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null()).status()
+	{
+		Ok(_) => true
+		Err(_) => false
+	}
 }
